@@ -8,9 +8,8 @@ servers with IG+.
 
 ## Usage
 
-Download the UltiCross texture package,
-[UltiCross.utx](Textures/UltiCross.utx), and install in your UT99 `Textures`
-folder.
+Download the `UltiCross.utx` texture package from the releases page and install
+to your UT99 `Textures` folder.
 
 Add the desired crosshair configuration to your `InstaGibPlus.ini` file.
 
