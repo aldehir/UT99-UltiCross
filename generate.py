@@ -19,12 +19,38 @@ def generate_circle(width, height, radius, thickness, directory="output"):
     ctx.arc(width / 2, height / 2, radius, 0, 2*math.pi)
     ctx.set_line_width(thickness)
     ctx.stroke()
+    
+    prefix = f"CircleD{int(radius * 2)}T{int(thickness)}"
 
-    data = s.get_data()
-    stride = s.get_stride()
+    create_texture(directory, prefix, s)
+
+
+def generate_dot(width, height, radius, directory="output"):
+    s = cairo.ImageSurface(cairo.FORMAT_A8, width, height)
+    ctx = cairo.Context(s)
+
+    ctx.set_source_rgba(0.0, 0.0, 0.0, 0.0)
+    ctx.rectangle(0, 0, width, height)
+    ctx.fill()
+
+    ctx.set_source_rgba(1.0, 1.0, 1.0, 1.0)
+    ctx.arc(width / 2, height / 2, radius, 0, 2*math.pi)
+    ctx.fill()
+    
+    prefix = f"DotD{int(radius * 2)}"
+
+    create_texture(directory, prefix, s)
+
+
+def create_texture(directory, prefix, surface):
+    width = surface.get_width()
+    height = surface.get_height()
 
     img = Image.new("P", (width, height), 0)
     mod_img = Image.new("P", (width, height), 0)
+
+    data = surface.get_data()
+    stride = surface.get_stride()
 
     # Create the palette for the mod texture
     palette = []
@@ -55,18 +81,18 @@ def generate_circle(width, height, radius, thickness, directory="output"):
     output_dir = pathlib.Path(directory)
     output_dir.mkdir(exist_ok=1)
 
-    img_path = output_dir / f"CircleD{int(radius * 2)}T{int(thickness)}.bmp"
-    mod_img_path = output_dir / f"CircleD{int(radius * 2)}T{int(thickness)}Modulate.bmp"
-
-    img.save(img_path, "bmp")
-    mod_img.save(mod_img_path, "bmp")
+    img.save(output_dir / f"{prefix}.bmp", "bmp")
+    mod_img.save(output_dir / f"{prefix}Modulate.bmp", "bmp")
 
 
 width = 64
 height = 64
 
-radii = [3.5, 4.0]
+radii = [0.5, 1.0, 2.0, 2.5, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0]
 thicknesses = [1.0, 2.0, 3.0, 4.0, 5.0]
+
+for r in radii:
+    generate_dot(width, height, r)
 
 for (r, t) in itertools.product(radii, thicknesses):
     generate_circle(width, height, r, t)
